@@ -4,23 +4,28 @@ import model.Maze;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * JPanel that is a visual representation of a given maze.
+ */
 public class MazePanel extends JPanel {
     private Maze maze;
     private final int SCALE = 50;
 
-    private final Color EMPTY_COLOR = Color.WHITE;
-    private final Color WALL_COLOR = Color.BLACK;
-    private final Color TARGET_COLOR = Color.RED;
-    private final Color START_COLOR = Color.GREEN;
-
     private final Map<Integer, Color> cellColorMap;
 
+    /**
+     * @param maze Maze to be displayed in panel.
+     */
     public MazePanel(Maze maze) {
+        final Color EMPTY_COLOR = Color.WHITE;
+        final Color WALL_COLOR = Color.BLACK;
+        final Color TARGET_COLOR = Color.RED;
+        final Color START_COLOR = Color.GREEN;
+
         this.maze = maze;
-        this.setSize(maze.getNumColumns() * SCALE, maze.getNumRows() * SCALE);
+        this.setSize(maze.getMazeHeight() * SCALE, maze.getMazeWidth() * SCALE);
         this.cellColorMap = Map.of(
                 Maze.EMPTY, EMPTY_COLOR,
                 Maze.WALL, WALL_COLOR,
@@ -32,8 +37,8 @@ public class MazePanel extends JPanel {
     public void paint(Graphics g) {
         Graphics2D graphics = (Graphics2D) g;
 
-        for (int y = 0; y < maze.getNumColumns(); y++) {
-            for (int x = 0; x < maze.getNumRows(); x++) {
+        for (int y = 0; y < maze.getMazeHeight(); y++) {
+            for (int x = 0; x < maze.getMazeWidth(); x++) {
                 graphics.setColor(getAppropriateColor(maze.getCell(x, y)));
                 graphics.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
             }

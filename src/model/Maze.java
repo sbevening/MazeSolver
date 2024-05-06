@@ -1,8 +1,12 @@
 package model;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Represents a maze composed of empty, wall, target, and start squares with uniform size and length.
+ */
 public class Maze implements Iterable<Integer> {
     public static final int EMPTY = 0;
     public static final int WALL = 1;
@@ -13,6 +17,11 @@ public class Maze implements Iterable<Integer> {
     private final int mazeHeight;
     private final int mazeWidth;
 
+    /**
+     *
+     * @param matrix 2d array of integers representing a maze. throws IllegalArgumentException if maze is not valid.
+     *               The array's sub-arrays must be equal in size to each other.
+     */
     public Maze(int[][] matrix) {
         this.maze = matrix;
         if (!isValid()) {
@@ -22,18 +31,28 @@ public class Maze implements Iterable<Integer> {
         mazeWidth = maze[0].length;
     }
 
+    /**
+     *
+     * @return The value of the cell with the given x and y coordinates in the maze.
+     */
     public int getCell(int x, int y) {
         return maze[y][x];
     }
 
-    public int getNumColumns() {
-        return maze.length;
+    public int getMazeHeight() {
+        return mazeHeight;
     }
 
-    public int getNumRows() {
-        return maze[0].length;
+    public int getMazeWidth() {
+        return mazeWidth;
     }
 
+    /**
+     *
+     * @return Returns true if the maze contains <b>exactly one target square</b> and <b>exactly one start square</b>,
+     * and only numbers that correspond to cells.
+     *
+     */
     public Boolean isValid() {
         int targetSquares = 0;
         int startSquares = 0;
@@ -56,24 +75,30 @@ public class Maze implements Iterable<Integer> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (int[] column : maze) {
-            for (int i = 0; i < column.length; i++) {
-                if (i != 0) {
+        for (int i = 0; i < mazeHeight; i++) {
+            int[] column = maze[i];
+            for (int j = 0; j < mazeWidth; j++) {
+                if (j != 0) {
                     sb.append(" ");
                 }
-                sb.append(column[i]);
+                sb.append(column[j]);
             }
-            sb.append("\n");
+            if (i < mazeHeight - 1) {
+                sb.append("\n");
+            }
         }
 
         return sb.toString();
     }
 
-    @Override
+    @Override @Nonnull
     public Iterator<Integer> iterator() {
         return new MazeIterator();
     }
 
+    /**
+     * Iterator that iterates through this maze by traversing through a row and then moving to the next one
+     */
     private class MazeIterator implements Iterator<Integer> {
         private int yCursor = 0;
         private int xCursor = 0;
