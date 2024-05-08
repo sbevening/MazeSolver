@@ -6,7 +6,7 @@ import java.util.*;
 /**
  * Represents a maze composed of empty, wall, target, and start squares with uniform size and length.
  */
-public class Maze implements Iterable<Integer> {
+public class Maze implements Iterable<Integer>  {
     public static final int EMPTY = 0;
     public static final int WALL = 1;
     public static final int TARGET = 2;
@@ -17,6 +17,8 @@ public class Maze implements Iterable<Integer> {
     private final int mazeWidth;
     private final int size;
     private Position startPosition;
+
+    private MazeSolverStepTracker stepTracker;
 
     /**
      *
@@ -181,6 +183,10 @@ public class Maze implements Iterable<Integer> {
                     toVisit.add(nextPosition);
                 }
             }
+
+            if (stepTracker != null) {
+                stepTracker.recordStep(this, new HashSet<Position>(visited), new LinkedList<>(toVisit));
+            }
         }
 
         return false;
@@ -219,5 +225,9 @@ public class Maze implements Iterable<Integer> {
         boolean yInBounds = (0 <= p.y() && p.y() < mazeHeight);
         boolean xInBounds = (0 <= p.x() && p.x() < mazeWidth);
         return yInBounds && xInBounds;
+    }
+
+    public void assignStepTracker(MazeSolverStepTracker stepTracker) {
+        this.stepTracker = stepTracker;
     }
 }

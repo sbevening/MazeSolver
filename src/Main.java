@@ -1,4 +1,6 @@
 import model.Maze;
+import model.MazeSolverStepTracker;
+import model.MazeStep;
 import ui.MazePanel;
 
 import javax.swing.*;
@@ -17,8 +19,9 @@ public class Main {
                 {1, 1, 0, 0, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1}
         };
+        MazeSolverStepTracker tracker = new MazeSolverStepTracker();
         Maze maze = new Maze(cells);
-        System.out.println(maze.solveMaze());
+        maze.assignStepTracker(tracker);
 
         JFrame frame = new JFrame();
         frame.add(new MazePanel(maze));
