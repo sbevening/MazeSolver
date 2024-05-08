@@ -1,8 +1,7 @@
 package model;
 
 import javax.annotation.Nonnull;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Represents a maze composed of empty, wall, target, and start squares with uniform size and length.
@@ -16,6 +15,8 @@ public class Maze implements Iterable<Integer> {
     private final int[][] maze;
     private final int mazeHeight;
     private final int mazeWidth;
+    private final int size;
+    private Position startPosition;
 
     /**
      *
@@ -29,14 +30,32 @@ public class Maze implements Iterable<Integer> {
         }
         mazeHeight = maze.length;
         mazeWidth = maze[0].length;
+        size = mazeHeight * mazeWidth;
     }
 
     /**
      *
-     * @return The value of the cell with the given x and y coordinates in the maze.
+     * @return The value of the cell at the nth overall position in the maze
      */
-    public int getCell(int x, int y) {
-        return maze[y][x];
+    public int getCellByPosition(Position pos) {
+        if (pos.x() >= mazeWidth || pos.y() >= mazeHeight) {
+            throw new IndexOutOfBoundsException();
+        }
+        return maze[pos.y()][pos.x()];
+    }
+
+    /**
+     *
+     * @return The value of the cell at the specified index in the maze, with indexes ascending from left to right
+     * then top to bottom
+     */
+    public int getCellByIndex(int pos) {
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        int columnIndex = pos / mazeWidth; // floor division by default
+        int rowIndex = pos % mazeWidth;
+        return maze[columnIndex][rowIndex];
     }
 
     public int getMazeHeight() {
@@ -53,7 +72,7 @@ public class Maze implements Iterable<Integer> {
      * and only numbers that correspond to cells.
      *
      */
-    public Boolean isValid() {
+    private Boolean isValid() {
         int targetSquares = 0;
         int startSquares = 0;
         for (int[] row : maze) {
@@ -69,6 +88,20 @@ public class Maze implements Iterable<Integer> {
         }
 
         return targetSquares == 1 && startSquares == 1;
+    }
+
+    /**
+     * Assigns startPosition to appropriate position.
+     */
+    private void locateStartSquare() {
+        for (int y = 0; y < mazeHeight; y++) {
+            for (int x = 0; x < mazeWidth; x++) {
+                if (maze[y][x] == START) {
+                    startPosition = new Position(x, y);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -123,5 +156,68 @@ public class Maze implements Iterable<Integer> {
 
             return nextInteger;
         }
+    }
+
+    /**
+     *
+     * @return Using a depth first search, attempts to find the solution square starting from startPosition. Returns
+     * true if the maze was solved and false otherwise.
+     */
+    public boolean solveMaze() {
+        locateStartSquare();
+        Set<Position> visited = new HashSet<>();
+        LinkedList<Position> toVisit = new LinkedList<>();
+        toVisit.add(new Position(startPosition.x(), startPosition.y()));
+
+        while (!toVisit.isEmpty()) {
+            Position currPosition = toVisit.poll();
+            if (getCellByPosition(currPosition) == TARGET) {
+                return true;
+            }
+
+            visited.add(currPosition);
+            for (Position nextPosition : generateNextPositions(currPosition)) {
+                if (getCellByPosition(nextPosition) != WALL && !(visited.contains(nextPosition))) {
+                    toVisit.add(nextPosition);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param currPosition The position that will be used to find the locations of the next positions.
+     * @return An array of the next, neighbouring positions that are within the maze.
+     */
+    private Position[] generateNextPositions(Position currPosition) {
+        int currX = currPosition.x();
+        int currY = currPosition.y();
+        
+        Position up = new Position(currX, currY - 1);
+        Position right = new Position(currX + 1, currY);
+        Position down = new Position(currX, currY + 1);
+        Position left = new Position(currX - 1, currY);
+
+        Position[] nextPositions = new Position[]{up, right, down, left};
+        ArrayList<Position> inBoundsNextPositions = new ArrayList<>();
+        for (Position p: nextPositions) {
+            if (isValidPosition(p)) {
+                inBoundsNextPositions.add(p);
+            }
+        }
+        return inBoundsNextPositions.toArray(new Position[0]);
+    }
+
+    /**
+     *
+     * @param p A given position
+     * @return True if position is in bounds with respect to the maze and false otherwise.
+     */
+    private boolean isValidPosition(Position p) {
+        boolean yInBounds = (0 <= p.y() && p.y() < mazeHeight);
+        boolean xInBounds = (0 <= p.x() && p.x() < mazeWidth);
+        return yInBounds && xInBounds;
     }
 }

@@ -1,6 +1,7 @@
 package ui;
 
 import model.Maze;
+import model.Position;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.util.Map;
  * JPanel that is a visual representation of a given maze.
  */
 public class MazePanel extends JPanel {
-    private Maze maze;
+    private final Maze maze;
     private final int SCALE = 50;
 
     private final Map<Integer, Color> cellColorMap;
@@ -39,7 +40,7 @@ public class MazePanel extends JPanel {
 
         for (int y = 0; y < maze.getMazeHeight(); y++) {
             for (int x = 0; x < maze.getMazeWidth(); x++) {
-                graphics.setColor(getAppropriateColor(maze.getCell(x, y)));
+                graphics.setColor(getAppropriateColor(maze.getCellByPosition(new Position(x, y))));
                 graphics.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
             }
         }
