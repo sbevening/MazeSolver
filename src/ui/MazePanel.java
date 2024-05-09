@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class MazePanel extends JPanel {
     private final Maze maze;
-    private final int SCALE = 50;
+    protected final static int SCALE = 50;
 
     private final Map<Integer, Color> cellColorMap;
 
@@ -46,7 +46,7 @@ public class MazePanel extends JPanel {
         }
     }
 
-    private Color getAppropriateColor(int cellType) {
+    protected Color getAppropriateColor(int cellType) {
         return cellColorMap.get(cellType);
     }
 }

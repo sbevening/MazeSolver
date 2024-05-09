@@ -177,15 +177,17 @@ public class Maze implements Iterable<Integer>  {
                 return true;
             }
 
-            visited.add(currPosition);
             for (Position nextPosition : generateNextPositions(currPosition)) {
                 if (getCellByPosition(nextPosition) != WALL && !(visited.contains(nextPosition))) {
                     toVisit.add(nextPosition);
                 }
             }
 
-            if (stepTracker != null) {
-                stepTracker.recordStep(this, new HashSet<Position>(visited), new LinkedList<>(toVisit));
+            if (!visited.contains(currPosition)) {
+                visited.add(currPosition);
+                if (stepTracker != null) {
+                    stepTracker.recordStep(this, new HashSet<Position>(visited), new LinkedList<>(toVisit));
+                }
             }
         }
 
