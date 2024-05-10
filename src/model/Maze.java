@@ -1,6 +1,5 @@
 package model;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -126,7 +125,7 @@ public class Maze implements Iterable<Integer>  {
         return sb.toString();
     }
 
-    @Override @Nonnull
+    @Override
     public Iterator<Integer> iterator() {
         return new MazeIterator();
     }

@@ -37,6 +37,7 @@ public class MazePanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         Graphics2D graphics = (Graphics2D) g;
+        super.paint(g);
 
         for (int y = 0; y < maze.getMazeHeight(); y++) {
             for (int x = 0; x < maze.getMazeWidth(); x++) {

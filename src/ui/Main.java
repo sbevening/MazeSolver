@@ -4,6 +4,7 @@ import model.Maze;
 import model.MazeSolverStepTracker;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,15 +12,24 @@ public class Main {
     public static void main(String[] args) {
         // sample maze
         int[][] cells = new int[][] {
-                {1, 1, 1, 1, 1, 1, 1, 1, 1},
-                {1, 0, 0, 0, 1, 0, 0, 1, 1},
-                {1, 1, 1, 0, 0, 0, 1, 1, 1},
-                {1, 0, 0, 0, 1, 0, 0, 1, 1},
-                {1, 0, 3, 1, 1, 0, 1, 2, 1},
-                {1, 0, 0, 0, 1, 1, 1, 0, 1},
-                {1, 1, 0, 1, 1, 1, 1, 0, 1},
-                {1, 1, 0, 0, 0, 0, 0, 0, 1},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1}
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+                {1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
+                {1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0},
+                {1, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0},
+                {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0},
+                {1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                {1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0},
+                {1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0},
+                {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0},
+                {1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0},
+                {1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0}
         };
         MazeSolverStepTracker tracker = new MazeSolverStepTracker();
         Maze maze = new Maze(cells);
@@ -28,9 +38,10 @@ public class Main {
 
         JFrame frame = new JFrame();
         MazeStepsPanel mazeStepsPanel = new MazeStepsPanel(tracker.getSteps());
-        frame.add(mazeStepsPanel);
-        frame.add(generateLastButton(mazeStepsPanel));
-        frame.add(generateNextButton(mazeStepsPanel));
+        frame.setLayout(new BorderLayout());
+        frame.add(mazeStepsPanel, BorderLayout.CENTER);
+        frame.add(generateLastButton(mazeStepsPanel), BorderLayout.WEST);
+        frame.add(generateNextButton(mazeStepsPanel), BorderLayout.EAST);
         frame.setVisible(true);
     }
 
