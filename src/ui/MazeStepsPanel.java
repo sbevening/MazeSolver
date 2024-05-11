@@ -1,5 +1,6 @@
 package ui;
 
+import model.MazeNode;
 import model.MazeStep;
 import model.Position;
 
@@ -8,22 +9,27 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MazeStepsPanel extends MazePanel {
     private static final Color TO_VISIT_COLOR = Color.CYAN;
     private static final Color VISITED_COLOR = Color.BLUE;
+    private static final Color PATH_COLOR = Color.YELLOW;
 
     private int stepNumber = 0;
     private ArrayList<MazeStep> steps;
+    private List<Position> path;
 
     private RenderingHints qualityHints;
 
     /**
      * @param steps Steps the panel can display.
+     * @param path  Shortest list of positions leading to target.
      */
-    public MazeStepsPanel(ArrayList<MazeStep> steps) {
+    public MazeStepsPanel(ArrayList<MazeStep> steps, List<Position> path) {
         super(steps.get(0).maze());
         this.steps = steps;
+        this.path = path;
 
         qualityHints = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
@@ -34,7 +40,7 @@ public class MazeStepsPanel extends MazePanel {
     }
 
     public void nextStep() {
-        Timer stepTimer = new Timer(1, new ActionListener() {
+        Timer stepTimer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (stepNumber < steps.size() - 1) {
@@ -65,16 +71,29 @@ public class MazeStepsPanel extends MazePanel {
 
         MazeStep currStep = steps.get(stepNumber);
 
-        for (Position toVisitPosition : currStep.toVisit()) {
+        for (MazeNode toVisitNode : currStep.toVisit()) {
+            Position toVisitPosition = toVisitNode.position();
             graphics.setColor(TO_VISIT_COLOR);
             RoundedSquareFactory
                     .fillRoundSquare(graphics, toVisitPosition.x() * SCALE, toVisitPosition.y() * 50, SCALE);
         }
 
-        for (Position visitedPosition : currStep.visited()) {
+        for (MazeNode visitedNode : currStep.visited()) {
+            Position visitedPosition = visitedNode.position();
             graphics.setColor(VISITED_COLOR);
             RoundedSquareFactory
                     .fillRoundSquare(graphics, visitedPosition.x() * SCALE, visitedPosition.y() * 50, SCALE);
+        }
+
+        if (stepNumber >= steps.size() - 1) {
+            drawPath(graphics);
+        }
+    }
+
+    private void drawPath(Graphics2D graphics) {
+        for (Position position : path) {
+            graphics.setColor(PATH_COLOR);
+            graphics.fillRect(position.x() * SCALE, position.y() * 50, SCALE, SCALE);
         }
     }
 }

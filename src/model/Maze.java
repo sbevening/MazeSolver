@@ -162,35 +162,37 @@ public class Maze implements Iterable<Integer>  {
     /**
      *
      * @return Using a depth first search, attempts to find the solution square starting from startPosition. Returns
-     * true if the maze was solved and false otherwise.
+     * the fastest path to the node if the maze is solvable and null otherwise.
      */
-    public boolean solveMaze() {
+    public List<Position> solveMaze() {
         locateStartSquare();
-        Set<Position> visited = new HashSet<>();
-        LinkedList<Position> toVisit = new LinkedList<>();
-        toVisit.add(new Position(startPosition.x(), startPosition.y()));
+        Set<MazeNode> visited = new HashSet<>();
+        LinkedList<MazeNode> toVisit = new LinkedList<>();
+        toVisit.add(new MazeNode(new Position(startPosition.x(), startPosition.y()), null));
 
         while (!toVisit.isEmpty()) {
-            Position currPosition = toVisit.poll();
+            MazeNode currNode = toVisit.poll();
+            Position currPosition = currNode.position();
             if (getCellByPosition(currPosition) == TARGET) {
-                return true;
+                return generatePath(currNode);
             }
 
             for (Position nextPosition : generateNextPositions(currPosition)) {
-                if (getCellByPosition(nextPosition) != WALL && !(visited.contains(nextPosition))) {
-                    toVisit.add(nextPosition);
+                MazeNode nextNode = new MazeNode(nextPosition, currNode);
+                if (getCellByPosition(nextPosition) != WALL && !(visited.contains(nextNode))) {
+                    toVisit.add(nextNode);
                 }
             }
 
-            if (!visited.contains(currPosition)) {
-                visited.add(currPosition);
+            if (!visited.contains(currNode)) {
+                visited.add(currNode);
                 if (stepTracker != null) {
-                    stepTracker.recordStep(this, new HashSet<Position>(visited), new LinkedList<>(toVisit));
+                    stepTracker.recordStep(this, new HashSet<>(visited), new LinkedList<>(toVisit));
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -230,5 +232,14 @@ public class Maze implements Iterable<Integer>  {
 
     public void assignStepTracker(MazeSolverStepTracker stepTracker) {
         this.stepTracker = stepTracker;
+    }
+
+    private ArrayList<Position> generatePath(MazeNode targetNode) {
+        ArrayList<Position> path = new ArrayList<>();
+        while (targetNode != null) {
+            path.add(0, targetNode.position());
+            targetNode = targetNode.parent();
+        }
+        return path;
     }
 }

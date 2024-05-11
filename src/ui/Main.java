@@ -2,11 +2,13 @@ package ui;
 
 import model.Maze;
 import model.MazeSolverStepTracker;
+import model.Position;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class Main {
                 {1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0},
                 {1, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0},
                 {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                {1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0},
+                {1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0},
                 {1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -34,10 +36,10 @@ public class Main {
         MazeSolverStepTracker tracker = new MazeSolverStepTracker();
         Maze maze = new Maze(cells);
         maze.assignStepTracker(tracker);
-        maze.solveMaze();
+        List<Position> path = maze.solveMaze();
 
         JFrame frame = new JFrame();
-        MazeStepsPanel mazeStepsPanel = new MazeStepsPanel(tracker.getSteps());
+        MazeStepsPanel mazeStepsPanel = new MazeStepsPanel(tracker.getSteps(), path);
         frame.setLayout(new BorderLayout());
         frame.add(mazeStepsPanel, BorderLayout.CENTER);
         frame.add(generateLastButton(mazeStepsPanel), BorderLayout.WEST);
