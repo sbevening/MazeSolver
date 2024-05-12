@@ -37,7 +37,7 @@ public class MazePainter {
         }
     }
 
-    private static void setRenderingHints(Graphics2D graphics) {
+    public static void setRenderingHints(Graphics2D graphics) {
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     }

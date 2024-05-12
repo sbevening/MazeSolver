@@ -85,6 +85,8 @@ public class MazeCreatorButtons extends JPanel {
         maze.assignStepTracker(tracker);
         List<Position> path = maze.solveMaze();
         JFrame mazeFrame = new JFrame("Maze Viewer");
+        mazeFrame.setResizable(false);
+        mazeFrame.setSize(1000, 800);
         mazeFrame.setLayout(new BorderLayout());
         MazeStepsPanel msp = new MazeStepsPanel(tracker.getSteps(), path);
         mazeFrame.add(msp, BorderLayout.CENTER);
