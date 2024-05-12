@@ -9,26 +9,39 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A set of buttons that can be used to control the maze creator's functionality.
  */
 public class MazeCreatorButtons extends JPanel {
     private final MazeCreatorPanel mazeCreatorPanel;
+    private final int screenWidth;
+    private final JLabel currentCellTypeLabel;
+
+    private static final Map<Integer, String> cellNameMap = Map.of(
+            Maze.EMPTY, "Empty",
+            Maze.WALL, "Wall",
+            Maze.TARGET, "Target",
+            Maze.START, "Start");
 
     /**
      * Creates a set of buttons that can be used to draw each type of tile on this.mazeCreatorPanel.
      * @param mazeCreatorPanel The panel this set of buttons interacts with/controls.
      */
     public MazeCreatorButtons(MazeCreatorPanel mazeCreatorPanel) {
+        screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         this.mazeCreatorPanel = mazeCreatorPanel;
-        setLayout(new GridLayout(1, 4));
-        setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, 100));
-        add(generateCellTypeSelectionButton("wall", Maze.WALL));
-        add(generateCellTypeSelectionButton("empty", Maze.EMPTY));
-        add(generateCellTypeSelectionButton("target", Maze.TARGET));
-        add(generateCellTypeSelectionButton("start", Maze.START));
+        setLayout(new GridLayout(3, 2));
+        setPreferredSize(new Dimension(screenWidth, 100));
+
+        add(generateCellTypeSelectionButton("Wall Square", Maze.WALL));
+        add(generateCellTypeSelectionButton("Empty Square", Maze.EMPTY));
+        add(generateCellTypeSelectionButton("Target Square", Maze.TARGET));
+        add(generateCellTypeSelectionButton("Start Square", Maze.START));
         add(generateSubmitButton());
+        currentCellTypeLabel = new JLabel("Selected: Wall", SwingConstants.CENTER);
+        add(currentCellTypeLabel);
     }
 
     /**
@@ -41,11 +54,13 @@ public class MazeCreatorButtons extends JPanel {
      */
     private JButton generateCellTypeSelectionButton(String label, int cellType) {
         JButton button = new JButton(label);
+        button.setPreferredSize(new Dimension(screenWidth / 2, 33));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     mazeCreatorPanel.setCellType(cellType);
+                    currentCellTypeLabel.setText("Selected: " + cellNameMap.get(cellType));
                 } catch (IllegalArgumentException iae) {
                     mazeCreatorPanel.setCellType(Maze.EMPTY); // set to empty as default if invalid number is given
                 }
@@ -60,14 +75,15 @@ public class MazeCreatorButtons extends JPanel {
      * MazeStepsPanel.
      */
     private JButton generateSubmitButton() {
-        JButton button = new JButton("submit");
+        JButton button = new JButton("Solve Maze");
+        button.setPreferredSize(new Dimension(screenWidth, 33));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     displayNewMazeStepsPanel();
                 } catch (IllegalArgumentException iae) {
-                    System.out.println("whoop");
+                    // pass
                 }
             }
         });
