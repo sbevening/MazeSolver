@@ -20,14 +20,13 @@ public class Maze implements Iterable<Integer> {
     private MazeSolverStepTracker stepTracker;
 
     /**
-     * @param matrix 2d array of integers representing a maze. throws IllegalArgumentException if maze is not valid.
-     *               The array's sub-arrays must be equal in size to each other.
+     * @param matrix 2d array of integers representing a maze. The array's sub-arrays must also be equal in size to
+     *               each other.
+     * @throws IllegalArgumentException Thrown if maze is not valid.
      */
     public Maze(int[][] matrix) {
         this.maze = matrix;
-        if (!isValid()) {
-            throw new IllegalArgumentException();
-        }
+        checkValidity();
         mazeHeight = maze.length;
         mazeWidth = maze[0].length;
         size = mazeHeight * mazeWidth;
@@ -65,16 +64,16 @@ public class Maze implements Iterable<Integer> {
     }
 
     /**
-     * @return Returns true if the maze contains <b>exactly one target square</b> and <b>exactly one start square</b>,
-     * and only numbers that correspond to cells.
+     * @return Returns true if the maze contains <b>exactly one target square</b> and <b>exactly one start square</b>.
+     * @throws IllegalArgumentException Thrown if the maze is invalid.
      */
-    private Boolean isValid() {
+    private Boolean checkValidity() {
         int targetSquares = 0;
         int startSquares = 0;
         for (int[] row : maze) {
             for (int cell : row) {
                 if (cell != EMPTY && cell != WALL && cell != TARGET && cell != START) {
-                    return false;
+                    throw new IllegalArgumentException("An illegal cell was found in the maze.");
                 } else if (cell == TARGET) {
                     targetSquares++;
                 } else if (cell == START) {
@@ -83,7 +82,10 @@ public class Maze implements Iterable<Integer> {
             }
         }
 
-        return targetSquares == 1 && startSquares == 1;
+        if (targetSquares == 1 && startSquares == 1) {
+            return true;
+        }
+        throw new IllegalArgumentException("The maze must contain exactly 1 target square and 1 start square.");
     }
 
     /**

@@ -81,7 +81,7 @@ public class MazeCreatorButtons extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    displayNewMazeStepsPanel();
+                    generateNewMazeStepsPanel();
                 } catch (IllegalArgumentException iae) {
                     // pass
                 }
@@ -95,8 +95,16 @@ public class MazeCreatorButtons extends JPanel {
      * If the maze in this.mazeCreatorPanel is valid, creates a new window with a MazeStepsPanel with steps on how to
      * solve that maze. If the maze is invalid, an IllegalArgumentException will be thrown.
      */
-    private void displayNewMazeStepsPanel() {
-        Maze maze = new Maze(mazeCreatorPanel.maze);
+    private void generateNewMazeStepsPanel() {
+        try {
+            Maze maze = new Maze(mazeCreatorPanel.maze);
+            displayNewMazeStepsPanel(maze);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private void displayNewMazeStepsPanel(Maze maze) {
         MazeSolverStepTracker tracker = new MazeSolverStepTracker();
         maze.assignStepTracker(tracker);
         List<Position> path = maze.solveMaze();
