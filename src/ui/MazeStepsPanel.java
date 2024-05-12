@@ -17,10 +17,13 @@ public class MazeStepsPanel extends MazePanel {
     private static final Color PATH_COLOR = Color.YELLOW;
 
     private int stepNumber = 0;
-    private ArrayList<MazeStep> steps;
-    private List<Position> path;
+    private final ArrayList<MazeStep> steps;
+    private final List<Position> path;
 
-    private RenderingHints qualityHints;
+    private Timer playTimer;
+    private Timer rewindTimer;
+
+    private final RenderingHints qualityHints;
 
     /**
      * @param steps Steps the panel can display.
@@ -31,6 +34,8 @@ public class MazeStepsPanel extends MazePanel {
         this.steps = steps;
         this.path = path;
 
+
+
         qualityHints = new RenderingHints(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON );
@@ -39,8 +44,14 @@ public class MazeStepsPanel extends MazePanel {
                 RenderingHints.VALUE_RENDER_QUALITY );
     }
 
-    public void nextStep() {
-        Timer stepTimer = new Timer(0, new ActionListener() {
+    /**
+     * Runs through all steps until the path is found.
+     */
+    public void playSteps() {
+        if (rewindTimer != null) {
+            rewindTimer.stop();
+        }
+        playTimer = new Timer(0, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (stepNumber < steps.size() - 1) {
@@ -52,15 +63,41 @@ public class MazeStepsPanel extends MazePanel {
                 }
             }
         });
-        stepTimer.start();
+        playTimer.start();
     }
 
-    public void lastStep() {
-        if (stepNumber <= 0) {
-            return;
+    /**
+     * Goes to previous step in maze solving.
+     */
+    public void rewindSteps() {
+        if (playTimer != null) {
+            playTimer.stop();
         }
-        stepNumber--;
-        repaint();
+        rewindTimer = new Timer(0, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (stepNumber > 0) {
+                    repaint();
+                    stepNumber--;
+                } else {
+                    Timer thisTimer = (Timer) e.getSource();
+                    thisTimer.stop();
+                }
+            }
+        });
+        rewindTimer.start();
+    }
+
+    /**
+     * Stops all timers and pauses viewing of steps.
+     */
+    public void pauseSteps() {
+        if (rewindTimer != null) {
+            rewindTimer.stop();
+        }
+        if (playTimer != null) {
+            playTimer.stop();
+        }
     }
 
     @Override
@@ -74,26 +111,28 @@ public class MazeStepsPanel extends MazePanel {
         for (MazeNode toVisitNode : currStep.toVisit()) {
             Position toVisitPosition = toVisitNode.position();
             graphics.setColor(TO_VISIT_COLOR);
-            RoundedSquareFactory
-                    .fillRoundSquare(graphics, toVisitPosition.x() * SCALE, toVisitPosition.y() * 50, SCALE);
+            graphics.fillRect(toVisitPosition.x() * SCALE, toVisitPosition.y() * SCALE, SCALE, SCALE);
         }
 
         for (MazeNode visitedNode : currStep.visited()) {
             Position visitedPosition = visitedNode.position();
             graphics.setColor(VISITED_COLOR);
-            RoundedSquareFactory
-                    .fillRoundSquare(graphics, visitedPosition.x() * SCALE, visitedPosition.y() * 50, SCALE);
+            graphics.fillRect(visitedPosition.x() * SCALE, visitedPosition.y() * SCALE, SCALE, SCALE);
         }
 
-        if (stepNumber >= steps.size() - 1) {
+        if (stepNumber >= steps.size() - 1 && path != null) {
             drawPath(graphics);
         }
     }
 
+    /**
+     * Draws the path to the target square onto graphics.
+     * @param graphics the <code>Graphics</code> context in which to paint
+     */
     private void drawPath(Graphics2D graphics) {
         for (Position position : path) {
             graphics.setColor(PATH_COLOR);
-            graphics.fillRect(position.x() * SCALE, position.y() * 50, SCALE, SCALE);
+            graphics.fillRect(position.x() * SCALE, position.y() * SCALE, SCALE, SCALE);
         }
     }
 }

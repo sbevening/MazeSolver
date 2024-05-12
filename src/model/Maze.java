@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Represents a maze composed of empty, wall, target, and start squares with uniform size and length.
  */
-public class Maze implements Iterable<Integer>  {
+public class Maze implements Iterable<Integer> {
     public static final int EMPTY = 0;
     public static final int WALL = 1;
     public static final int TARGET = 2;
@@ -20,7 +20,6 @@ public class Maze implements Iterable<Integer>  {
     private MazeSolverStepTracker stepTracker;
 
     /**
-     *
      * @param matrix 2d array of integers representing a maze. throws IllegalArgumentException if maze is not valid.
      *               The array's sub-arrays must be equal in size to each other.
      */
@@ -35,7 +34,6 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @return The value of the cell at the nth overall position in the maze
      */
     public int getCellByPosition(Position pos) {
@@ -46,7 +44,6 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @return The value of the cell at the specified index in the maze, with indexes ascending from left to right
      * then top to bottom
      */
@@ -68,10 +65,8 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @return Returns true if the maze contains <b>exactly one target square</b> and <b>exactly one start square</b>,
      * and only numbers that correspond to cells.
-     *
      */
     private Boolean isValid() {
         int targetSquares = 0;
@@ -160,7 +155,6 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @return Using a depth first search, attempts to find the solution square starting from startPosition. Returns
      * the fastest path to the node if the maze is solvable and null otherwise.
      */
@@ -179,7 +173,9 @@ public class Maze implements Iterable<Integer>  {
 
             for (Position nextPosition : generateNextPositions(currPosition)) {
                 MazeNode nextNode = new MazeNode(nextPosition, currNode);
-                if (getCellByPosition(nextPosition) != WALL && !(visited.contains(nextNode))) {
+                if (getCellByPosition(nextPosition) != WALL
+                        && !(visited.contains(nextNode))
+                        && !(toVisit.contains(nextNode))) {
                     toVisit.add(nextNode);
                 }
             }
@@ -196,14 +192,13 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @param currPosition The position that will be used to find the locations of the next positions.
      * @return An array of the next, neighbouring positions that are within the maze.
      */
     private Position[] generateNextPositions(Position currPosition) {
         int currX = currPosition.x();
         int currY = currPosition.y();
-        
+
         Position up = new Position(currX, currY - 1);
         Position right = new Position(currX + 1, currY);
         Position down = new Position(currX, currY + 1);
@@ -211,7 +206,7 @@ public class Maze implements Iterable<Integer>  {
 
         Position[] nextPositions = new Position[]{up, right, down, left};
         ArrayList<Position> inBoundsNextPositions = new ArrayList<>();
-        for (Position p: nextPositions) {
+        for (Position p : nextPositions) {
             if (isValidPosition(p)) {
                 inBoundsNextPositions.add(p);
             }
@@ -220,7 +215,6 @@ public class Maze implements Iterable<Integer>  {
     }
 
     /**
-     *
      * @param p A given position
      * @return True if position is in bounds with respect to the maze and false otherwise.
      */
