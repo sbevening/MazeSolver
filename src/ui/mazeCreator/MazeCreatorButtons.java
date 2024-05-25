@@ -1,8 +1,11 @@
-package ui;
+package ui.mazeCreator;
 
 import model.Maze;
 import model.MazeSolverStepTracker;
 import model.Position;
+import ui.mazeStepper.MazeStepButtons;
+import ui.mazeStepper.MazeStepsPanel;
+import ui.styling.StyleUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +35,7 @@ public class MazeCreatorButtons extends JPanel {
     public MazeCreatorButtons(MazeCreatorPanel mazeCreatorPanel) {
         screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         this.mazeCreatorPanel = mazeCreatorPanel;
-        setLayout(new GridLayout(3, 2));
+        setLayout(new GridLayout(3, 3));
         setPreferredSize(new Dimension(screenWidth, 100));
 
         add(generateCellTypeSelectionButton("Wall Square", Maze.WALL));
@@ -40,6 +43,7 @@ public class MazeCreatorButtons extends JPanel {
         add(generateCellTypeSelectionButton("Target Square", Maze.TARGET));
         add(generateCellTypeSelectionButton("Start Square", Maze.START));
         add(generateSubmitButton());
+        add(generateAutomataButton());
         currentCellTypeLabel = new JLabel("Selected: Wall", SwingConstants.CENTER);
         add(currentCellTypeLabel);
     }
@@ -54,6 +58,7 @@ public class MazeCreatorButtons extends JPanel {
      */
     private JButton generateCellTypeSelectionButton(String label, int cellType) {
         JButton button = new JButton(label);
+        StyleUtilities.styleFlatBordered(button);
         button.setPreferredSize(new Dimension(screenWidth / 2, 33));
         button.addActionListener(new ActionListener() {
             @Override
@@ -69,6 +74,21 @@ public class MazeCreatorButtons extends JPanel {
         return button;
     }
 
+    private JButton generateAutomataButton() {
+        JButton button = new JButton("Generate Random Maze");
+        StyleUtilities.styleFlatBordered(button);
+        button.setPreferredSize(new Dimension(screenWidth, 33));
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[][] cells = new AutomataMazeGenerator().generateMaze(60, 30);
+                mazeCreatorPanel.setMaze(cells);
+            }
+        });
+
+        return button;
+    }
+
     /**
      *
      * @return A button that will submit the maze to be checked for validity and then solved and used to generate a
@@ -76,6 +96,7 @@ public class MazeCreatorButtons extends JPanel {
      */
     private JButton generateSubmitButton() {
         JButton button = new JButton("Solve Maze");
+        StyleUtilities.styleFlatBordered(button);
         button.setPreferredSize(new Dimension(screenWidth, 33));
         button.addActionListener(new ActionListener() {
             @Override
@@ -97,7 +118,7 @@ public class MazeCreatorButtons extends JPanel {
      */
     private void generateNewMazeStepsPanel() {
         try {
-            Maze maze = new Maze(mazeCreatorPanel.maze);
+            Maze maze = new Maze(mazeCreatorPanel.getMaze());
             displayNewMazeStepsPanel(maze);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());

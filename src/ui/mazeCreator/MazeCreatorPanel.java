@@ -1,6 +1,7 @@
-package ui;
+package ui.mazeCreator;
 
 import model.Maze;
+import ui.styling.MazePainter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +11,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import static ui.MazePanel.SCALE;
+
 /**
  * Panel that lets the user draw a maze with the UI and send it to be solved and used to create a MazeStepsPanel.
  */
 public class MazeCreatorPanel extends JPanel {
     private static final int MAZE_HEIGHT = 30;
     private static final int MAZE_WIDTH = 60;
-    int[][] maze = new int[MAZE_HEIGHT][MAZE_WIDTH];
-    private static final int SCALE = 20;
+
+    private int[][] maze = new int[MAZE_HEIGHT][MAZE_WIDTH];
 
     private int cellType = Maze.WALL;
     private final ArrayList<Integer> validCellTypes;
 
     public MazeCreatorPanel() {
         validCellTypes = new ArrayList<>(Arrays.asList(Maze.EMPTY, Maze.WALL, Maze.TARGET, Maze.START));
+        setupDragListener();
+    }
+
+    public int[][] getMaze() {
+        return maze;
+    }
+
+    public void setMaze(int[][] maze) {
+        this.maze = maze;
+        repaint();
+    }
+
+    private void setupDragListener() {
         MouseAdapter dragAdapter = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -37,6 +53,12 @@ public class MazeCreatorPanel extends JPanel {
         };
         addMouseListener(dragAdapter);
         addMouseMotionListener(dragAdapter);
+    }
+
+    public MazeCreatorPanel(int[][] cells) {
+        this.maze = cells;
+        validCellTypes = new ArrayList<>(Arrays.asList(Maze.EMPTY, Maze.WALL, Maze.TARGET, Maze.START));
+        setupDragListener();
     }
 
     /**
@@ -70,7 +92,7 @@ public class MazeCreatorPanel extends JPanel {
         int scaledMouseX = mouseRawX / SCALE;
         int scaledMouseY = mouseRawY / SCALE;
 
-        if (0 < scaledMouseY && scaledMouseY < maze.length && 0 < scaledMouseX && scaledMouseX < maze[0].length) {
+        if (0 <= scaledMouseY && scaledMouseY < maze.length && 0 <= scaledMouseX && scaledMouseX < maze[0].length) {
             maze[scaledMouseY][scaledMouseX] = cellType;
         }
 

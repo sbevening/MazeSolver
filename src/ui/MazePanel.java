@@ -1,6 +1,7 @@
 package ui;
 
 import model.Maze;
+import ui.styling.MazePainter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.awt.*;
  */
 public class MazePanel extends JPanel {
     private final Maze maze;
-    protected final static int SCALE = 20;
+    public final static int SCALE = 10;
 
     /**
      * @param maze Maze to be displayed in panel.

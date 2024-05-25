@@ -1,4 +1,4 @@
-package ui;
+package ui.mazeStepper;
 
 import javax.swing.*;
 import java.awt.*;

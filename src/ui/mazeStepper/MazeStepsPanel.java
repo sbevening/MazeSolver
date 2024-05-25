@@ -1,8 +1,9 @@
-package ui;
+package ui.mazeStepper;
 
 import model.MazeNode;
 import model.MazeStep;
 import model.Position;
+import ui.MazePanel;
 
 import javax.swing.*;
 import java.awt.*;
